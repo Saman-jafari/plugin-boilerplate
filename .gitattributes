@@ -1,6 +1,12 @@
-composer.phar
-.idea/
-
-public/
-src/
-
+composer.phar export-ignore
+.idea/ export-ignore
+assets/ export-ignore
+composer.lock export-ignore
+composer.json export-ignore
+gulpfile.babel.js export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+readme.md export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+.babelrc export-ignore
