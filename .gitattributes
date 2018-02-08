@@ -1,2 +1,6 @@
 composer.phar
 .idea/
+
+public/
+src/
+

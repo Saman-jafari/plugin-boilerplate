@@ -1,0 +1,3 @@
+blah = () => {
+    console.log('bla')
+};

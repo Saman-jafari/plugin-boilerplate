@@ -1,0 +1,37 @@
+{
+  "name": "plugin",
+  "version": "1.0.0",
+  "description": "MVC for plugin",
+  "main": "name-plugin.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Saman-jafari/plugin-boilerplate.git"
+  },
+  "keywords": [
+    "plugin"
+  ],
+  "author": "saman jafari",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Saman-jafari/plugin-boilerplate/issues"
+  },
+  "homepage": "https://github.com/Saman-jafari/plugin-boilerplate#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "browserify": "^16.0.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "sassdoc": "^2.5.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  }
+}
