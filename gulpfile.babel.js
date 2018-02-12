@@ -6,6 +6,7 @@ import sassdoc  from 'sassdoc'
 import babel from 'gulp-babel'
 import buffer from 'vinyl-buffer'
 import uglify from 'gulp-uglify'
+import imagemin from 'gulp-imagemin';
 
 
 //css part
@@ -69,5 +70,20 @@ gulp.task('js', function () {
         .pipe(uglify()) // Use any gulp plugins you want now
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(output));
+});
+gulp.task('image',function () {
+    gulp.src('assets/images/*')
+        .pipe(imagemin([
+            imagemin.gifsicle({interlaced: true}),
+            imagemin.jpegtran({progressive: true}),
+            imagemin.optipng({optimizationLevel: 5}),
+            imagemin.svgo({
+                plugins: [
+                    {removeViewBox: true},
+                    {cleanupIDs: false}
+                ]
+            })],{verbose: true
+        }))
+        .pipe(gulp.dest('public/images'))
 });
 gulp.task('default', ['sass', 'prod','js' ]);
