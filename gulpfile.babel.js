@@ -7,6 +7,7 @@ import babel from 'gulp-babel';
 import buffer from 'vinyl-buffer';
 import uglify from 'gulp-uglify';
 import imagemin from 'gulp-imagemin';
+import include from "gulp-include";
 
 // input and out put define here
 const inputCss = './app/assets/**/*.scss';
@@ -46,6 +47,20 @@ gulp.task('js', function () {
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(uglify()) // Use any gulp plugins you want now
         .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(output));
+});
+
+gulp.task("includeScripts", function() {
+    console.log("-- gulp is running task 'scripts'");
+    gulp.src(inputJs)
+        .pipe(include({
+            extensions: "js",
+            hardFail: true,
+            includePaths: [
+                __dirname + "/node_modules"
+            ]
+        }))
+        .on('error', console.log)
         .pipe(gulp.dest(output));
 });
 //media tasks
