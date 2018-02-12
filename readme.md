@@ -2,7 +2,7 @@ I created this boilerplate for developing plugins that based on wordpress core
 automation with gulp;
 
 
-features :
+**features** :
 - Sass
 - autoprefixer
 - Babel
@@ -12,7 +12,8 @@ features :
 - composer
 - npm
 - image minification
-Commands:
+
+**Commands:**
 - `gulp prod` make fires ready for production
 - `gulp watch`
 - `gulp js` transpile es6 to es5
