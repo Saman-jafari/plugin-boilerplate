@@ -12,7 +12,7 @@ automation with gulp;
 - composer
 - npm
 - image minification
-- include
+- gulp-include
 
 **Commands:**
 - `gulp prod` make fires ready for production
