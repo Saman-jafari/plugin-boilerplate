@@ -6,7 +6,6 @@ automation with gulp;
 - Sass
 - autoprefixer
 - Babel
-- SassDoc
 - uglify
 - sourcemaps
 - composer
