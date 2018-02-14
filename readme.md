@@ -12,6 +12,7 @@ automation with gulp;
 - npm
 - image minification
 - gulp-include
+- browserSync
 
 **Commands:**
 - `gulp prod` make fires ready for production
