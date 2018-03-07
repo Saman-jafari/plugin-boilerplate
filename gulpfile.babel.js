@@ -36,6 +36,7 @@ let autoprefixerOptions = {
 };
 
 let browserSyncCreate = browserSync.create();
+let reload      = browserSyncCreate.reload;
 gulp.task('browserSync', function() {
     browserSyncCreate.init({
         server: {
@@ -57,9 +58,7 @@ gulp.task('sass', function(){
        .pipe(sourcemaps.write('./'))
        .pipe(autoprefixer(autoprefixerOptions))
        .pipe(gulp.dest(output))
-       .pipe(browserSync.reload({
-           stream: true
-       }))
+       .pipe(browserSyncCreate.stream())
        .resume();
 });
 //js tasks
@@ -141,8 +140,9 @@ gulp.task('fonts', function() {
  */
 
 gulp.task('watch',['js', 'sass', 'copyLib','browserSync'], function() {
-     gulp.watch(inputCss, ['sass',browserSync.reload]);
-     gulp.watch(inputJs, ['js', browserSync.reload])
+     gulp.watch(inputCss, ['sass']).on('change', reload);
+     gulp.watch(inputJs, ['js']).on('change', reload);
+    gulp.watch(inputJs, ['copyLib']).on('change', reload)
          //if your job is html uncomment this line
     // gulp.watch(inputHTML,browserSync.reload)
         .on('change', function(event) {
