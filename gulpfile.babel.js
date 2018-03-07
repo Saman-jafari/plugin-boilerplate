@@ -17,6 +17,10 @@ import del from 'del';
 const inputCss = './app/assets/**/*.scss';
 const inputJs = './app/assets/**/*.js';
 const inputImages = './app/assets/images/**/*';
+const NotlibInput = '!./assets/js/lib/**/*.js';
+const libInput = './assets/js/lib/*.js';
+const outputLib = './public/js/lib/';
+
 // const inputHTML = '*.html';
 const inputFonts = './app/assets/fonts/**/*';
 const output = './public/';
@@ -38,6 +42,9 @@ gulp.task('browserSync', function() {
             //set index
             baseDir: './public/'
         },
+        //uncomment for proxy
+        // proxy: "127.0.0.1",
+
     })
 });
 // task are goes here
@@ -56,20 +63,33 @@ gulp.task('sass', function(){
        .resume();
 });
 //js tasks
-gulp.task('js', function () {
-    return gulp
-        .src(inputJs)
-        .pipe(babel())
-        .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify()) // Use any gulp plugins you want now
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(output));
-});
 
-gulp.task("includeScripts", function() {
+/**
+ * copy library files to output
+ */
+
+gulp.task('copyLib', function () {
+    return gulp
+        .src(libInput)
+        .pipe(include({
+            extensions: "js",
+            hardFail: true,
+            includePaths: [
+                __dirname + "/node_modules"
+            ]
+        }))
+        .pipe(gulp.dest(outputLib));
+});
+/**
+ * transpile es6 to es5 library files to output
+ * concat js include
+ * uglify
+ * export
+ */
+gulp.task("js", function () {
     console.log("-- gulp is running task 'scripts'");
-    gulp.src(inputJs)
+    return gulp
+        .src([inputJs, NotlibInput])
         .pipe(include({
             extensions: "js",
             hardFail: true,
@@ -78,9 +98,19 @@ gulp.task("includeScripts", function() {
             ]
         }))
         .on('error', console.log)
+        .pipe(babel())
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(sourcemaps.write('./'))
+        .pipe(uglify({
+            mangle: false
+        }))
         .pipe(gulp.dest(output));
 });
 //media tasks
+/**
+ * images optimization
+ */
 gulp.task('image',function () {
     gulp.src(inputImages)
         .pipe(imagemin([
@@ -96,12 +126,21 @@ gulp.task('image',function () {
         }))
         .pipe(gulp.dest('public/images'))
 });
+
+/**
+ * copy fonts to output
+ */
+
 gulp.task('fonts', function() {
     return gulp.src(inputFonts)
         .pipe(gulp.dest(output))
 });
 
-gulp.task('watch',['js','sass','browserSync'], function() {
+/**
+ * watch the process live
+ */
+
+gulp.task('watch',['js', 'sass', 'copyLib','browserSync'], function() {
      gulp.watch(inputCss, ['sass',browserSync.reload]);
      gulp.watch(inputJs, ['js', browserSync.reload])
          //if your job is html uncomment this line
@@ -113,7 +152,7 @@ gulp.task('watch',['js','sass','browserSync'], function() {
 gulp.task('clean:dist', function() {
     return del.sync(output);
 });
-//use this to concatenate html file
+//use this to concatenate html file css or js files
 // gulp.task('useref', function(){
 //     return gulp.src(inputHTML)
 //         .pipe(useref())
@@ -123,16 +162,35 @@ gulp.task('clean:dist', function() {
 gulp.task('prod',['image'], function () {
     gulp
         .src(inputCss)
-        .pipe(sass({ outputStyle: 'compressed' }))
+        .pipe(sass({outputStyle: 'compressed'}))
         .pipe(autoprefixer(autoprefixerOptions))
         .pipe(gulp.dest(output));
-    gulp.src(inputJs)
+    gulp.src([inputJs, NotlibInput])
+        .pipe(include({
+            extensions: "js",
+            hardFail: true,
+            includePaths: [
+                __dirname + "/node_modules"
+            ]
+        }))
+        .on('error', console.log)
         .pipe(babel())
         .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify()) // Use any gulp plugins you want now
+        .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(sourcemaps.write('./'))
+        .pipe(uglify({
+            mangle: false
+        }))
         .pipe(gulp.dest(output));
+    gulp.src(libInput)
+        .pipe(include({
+            extensions: "js",
+            hardFail: true,
+            includePaths: [
+                __dirname + "/node_modules"
+            ]
+        }))
+        .pipe(gulp.dest(outputLib));
     //if you have html uncomment here
     // gulp.src(inputHTML)
     //     .pipe(useref())
