@@ -1,3 +1,4 @@
+import StripCommnetsCss from 'gulp-strip-css-comments';
 
 import gulp from 'gulp';
 import sass from 'gulp-sass';
@@ -57,6 +58,7 @@ gulp.task('sass', function(){
        .pipe(sass(sassOptions))
        .pipe(sourcemaps.write('./'))
        .pipe(autoprefixer(autoprefixerOptions))
+       .pipe(StripCommnetsCss({preserve:false}))
        .pipe(gulp.dest(output))
        .pipe(browserSyncCreate.stream())
        .resume();
