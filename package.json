@@ -4,6 +4,10 @@
   "description": "MVC for plugin",
   "main": "name-plugin.php",
   "scripts": {
+    "start": "gulp dev",
+    "build": "gulp build",
+    "aloadphp": "php composer dump-autoload -o",
+    "aload": "composer dump-autoload -o",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,19 +24,29 @@
   },
   "homepage": "https://github.com/Saman-jafari/plugin-boilerplate#readme",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
+    "@babel/cli": "^7.0.0-beta.51",
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "@babel/register": "^7.0.0-beta.51",
     "babelify": "^8.0.0",
-    "browser-sync": "^2.24.7",
-    "gulp": "^3.9.1",
+    "bootstrap": "^4.1.1",
+    "browser-sync": "^2.24.5",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
     "gulp-autoprefixer": "^5.0.0",
-    "gulp-babel": "^7.0.1",
+    "gulp-babel": "^8.0.0-beta.2",
     "gulp-imagemin": "^4.1.0",
     "gulp-include": "^2.3.1",
+    "gulp-livereload": "^3.8.1",
     "gulp-sass": "^4.0.1",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-strip-css-comments": "^2.0.0",
-    "gulp-uglify": "^3.0.1",
-    "vinyl-buffer": "^1.0.1"
+    "gulp-uglify": "^3.0.0",
+    "jquery": "^3.3.1",
+    "parsleyjs": "^2.8.1",
+    "popper.js": "^1.14.3",
+    "prettier": "1.4.0-beta",
+    "tether": "^1.4.4",
+    "vinyl-buffer": "latest"
   }
 }
