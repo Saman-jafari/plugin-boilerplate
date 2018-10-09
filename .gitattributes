@@ -10,3 +10,4 @@ readme.md export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
 .babelrc export-ignore
+assets export-ignore
