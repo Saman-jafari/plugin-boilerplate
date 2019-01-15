@@ -44,6 +44,7 @@
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-strip-css-comments": "^2.0.0",
+    "gulp-stylelint": "^8.0.0",
     "gulp-tap": "^1.0.1",
     "gulp-uglify": "^3.0.1",
     "gulplog": "latest",
@@ -51,6 +52,9 @@
     "parsleyjs": "^2.8.1",
     "popper.js": "^1.14.6",
     "prettier": "1.15.3",
+    "stylelint": "^9.9.0",
+    "stylelint-order": "^2.0.0",
+    "stylelint-scss": "^3.5.0",
     "tether": "^1.4.5",
     "vinyl-buffer": "latest",
     "vinyl-source-stream": "^2.0.0"

@@ -16,6 +16,7 @@ import log from 'gulplog';
 import babelify from 'babelify';
 import tap from 'gulp-tap';
 import eslint from 'gulp-eslint';
+import styleLint from 'gulp-stylelint';
 
 // ---------------------options for plugins goes here-------------------------
 
@@ -54,6 +55,11 @@ export const clean = () => del(["public"]);
 //css tasks scss to css
 export const sassFiles = done => {
     src(config.inputCss)
+        .pipe(styleLint({
+            reporters: [
+                {formatter: 'string', console: true}
+            ]
+        }))
         .pipe(sass(config.sassOptions))
         .pipe(sourceMaps.write("./"))
         .pipe(autoPrefix(config.autoPrefixOptions))
