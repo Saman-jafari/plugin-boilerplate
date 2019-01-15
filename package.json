@@ -37,6 +37,7 @@
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-babel": "^8.0.0",
+    "gulp-eslint": "^5.0.0",
     "gulp-imagemin": "^5.0.3",
     "gulp-include": "^2.3.1",
     "gulp-livereload": "^4.0.1",

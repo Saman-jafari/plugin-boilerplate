@@ -1,8 +1,7 @@
-import { dest, parallel, series, src, watch } from "gulp";
+import {dest, parallel, series, src, watch} from "gulp";
 import sass from "gulp-sass";
 import sourceMaps from "gulp-sourcemaps";
 import autoPrefix from "gulp-autoprefixer";
-import babel from "gulp-babel";
 import buffer from "vinyl-buffer";
 import uglify from "gulp-uglify";
 import imageMin from "gulp-imagemin";
@@ -12,13 +11,14 @@ import StripCommentsCss from "gulp-strip-css-comments";
 import del from "del";
 import browserSync from "browser-sync";
 import config from "./configGulp";
-import browserify from'browserify';
-import source from 'vinyl-source-stream';
+import browserify from 'browserify';
 import log from 'gulplog';
 import babelify from 'babelify';
-import tap from 'gulp-tap'
+import tap from 'gulp-tap';
+import eslint from 'gulp-eslint';
 
 // ---------------------options for plugins goes here-------------------------
+
 
 const server = browserSync.create();
 
@@ -57,7 +57,7 @@ export const sassFiles = done => {
         .pipe(sass(config.sassOptions))
         .pipe(sourceMaps.write("./"))
         .pipe(autoPrefix(config.autoPrefixOptions))
-        .pipe(StripCommentsCss({ preserve: false }))
+        .pipe(StripCommentsCss({preserve: false}))
         .pipe(dest(config.output))
         .pipe(liveReload());
     done();
@@ -94,27 +94,45 @@ export const copyLibAdmin = done => {
 };
 
 //js tasks es next to es5
+export const eslintjs = () => {
+    src(['assets/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        // Brick on failure to be super strict
+        .pipe(eslint.results(results => {
+            // Called once for all ESLint results.
+            console.log(`Total Results: ${results.length}`);
+            console.log(`Total Warnings: ${results.warningCount}`);
+            console.log(`Total Errors: ${results.errorCount}`);
+            if (results.warningCount > 0) {
+                process.exit(0);
+            }
+        }))
+        .pipe(eslint.failOnError());
+    // transform file objects using gulp-tap plugin
+};
 
 export const js = done => {
+    eslintjs();
     src('assets/**/[^_]*.js', {read: false}) // no need of reading file because browserify does.
-
-    // transform file objects using gulp-tap plugin
         .pipe(tap(function (file) {
 
             log.info('bundling ' + file.path);
 
             // replace file contents with browserify's bundle stream
-            file.contents = browserify(file.path, {debug: true}).transform(babelify, {presets: ["@babel/env"]}).bundle();
+            file.contents = browserify(file.path, {debug: true})
+                .transform(babelify, {presets: ["@babel/env"]})
+                .bundle();
 
         }))
         // transform streaming contents into buffer contents (because gulp-sourcemaps does not support streaming contents)
         .pipe(buffer())
-        .pipe(uglify({ mangle: false, }))
-        .pipe(sourceMaps.init({ loadMaps: true }))
+        .pipe(uglify({mangle: false,}))
+        .pipe(sourceMaps.init({loadMaps: true}))
         .pipe(sourceMaps.write("./"))
         .pipe(dest(config.output))
         .pipe(liveReload());
-        done();
+    done();
 };
 
 //media tasks minify images
@@ -123,11 +141,11 @@ export const image = done => {
         .pipe(
             imageMin(
                 [
-                    imageMin.gifsicle({ interlaced: true }),
-                    imageMin.jpegtran({ progressive: true }),
-                    imageMin.optipng({ optimizationLevel: 5 }),
+                    imageMin.gifsicle({interlaced: true}),
+                    imageMin.jpegtran({progressive: true}),
+                    imageMin.optipng({optimizationLevel: 5}),
                     imageMin.svgo({
-                        plugins: [{ removeViewBox: true }, { cleanupIDs: false }],
+                        plugins: [{removeViewBox: true}, {cleanupIDs: false}],
                     }),
                 ],
                 {
@@ -157,7 +175,7 @@ export const watchFiles = done => {
         });
     done();
 };
-export { watchFiles as watch };
+export {watchFiles as watch};
 export const build = series(clean, js, sassFiles, copyLib, copyLibAdmin, image, fonts);
 
 //development env

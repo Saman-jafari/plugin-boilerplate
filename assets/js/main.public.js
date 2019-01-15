@@ -1,1 +1,1 @@
-//=include bootstrap/dist/js/bootstrap.js
+import 'bootstrap';

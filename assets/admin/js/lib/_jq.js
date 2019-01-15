@@ -1,3 +1,3 @@
-blah = () => {
+const blah = () => {
     console.log('bla')
 };
