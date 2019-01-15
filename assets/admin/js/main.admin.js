@@ -1,3 +1,3 @@
-import blah from './lib/jq';
+import blah from './lib/_jq';
 
 blah();

@@ -12,6 +12,11 @@ import StripCommentsCss from "gulp-strip-css-comments";
 import del from "del";
 import browserSync from "browser-sync";
 import config from "./configGulp";
+import browserify from'browserify';
+import source from 'vinyl-source-stream';
+import log from 'gulplog';
+import babelify from 'babelify';
+import tap from 'gulp-tap'
 
 // ---------------------options for plugins goes here-------------------------
 
@@ -91,14 +96,14 @@ export const copyLibAdmin = done => {
 //js tasks es next to es5
 
 export const js = done => {
-    src([config.inputJs, config.NotlibInput, config.NotlibInputAdmin])
-        .pipe(
-            include({
-                extensions: "js",
-                hardFail: true,
-                includePaths: [__dirname + "/node_modules"],
-            }),
-        )
+    const b = browserify({
+        entries: './assets/js/main.public.js',
+        debug: true,
+        // defining transforms here will avoid crashing your stream
+        transform: [babelify]
+    });
+    b.bundle()
+        .pipe(source('app.js'))
         .on("error", console.log)
         .pipe(babel())
         .pipe(buffer())
@@ -161,3 +166,25 @@ export const build = series(clean, js, sassFiles, copyLib, copyLibAdmin, image, 
 export const dev = series(clean, build, serve, watchFiles);
 
 export default build;
+
+
+export const devw = done => {
+
+    src('assets/admin/**/[^_]*.js', {read: false}) // no need of reading file because browserify does.
+
+    // transform file objects using gulp-tap plugin
+        .pipe(tap(function (file) {
+
+            log.info('bundling ' + file.path);
+
+            // replace file contents with browserify's bundle stream
+            file.contents = browserify(file.path, {debug: true}).transform(babelify, {presets: ["@babel/env"]}).bundle();
+
+        }))
+        // transform streaming contents into buffer contents (because gulp-sourcemaps does not support streaming contents)
+        .pipe(buffer())
+        .pipe(uglify({ mangle: false, }))
+        .pipe(dest('dest'));
+    done();
+
+};

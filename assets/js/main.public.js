@@ -1,1 +1,1 @@
-//=include lodash/dist/lodash.js
+//=include bootstrap/dist/js/bootstrap.js
