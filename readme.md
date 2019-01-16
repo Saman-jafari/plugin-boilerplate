@@ -14,6 +14,15 @@ wordpress development automation with gulp;
 - gulp-include
 - browserSync
 - gulp LiveReload
+- manifest
+- eslint
+- styleLint
+
+###Start From here
+`git clone` from files then `npm install` and `composer install` and `npm run autoload` if 
+error arise `npm run autoloadw@php` if error arise install latest version composer 
+then close all IDE or editors and try again then in gulp file change ServerUrl var to your 
+local host name then `npm start` then you can use commands have fun hacking!
 
 
 ####**Commands**:<br>
@@ -29,21 +38,16 @@ Development Start
 Production Build
 - `npm run build` build a production ready file and will put it in public folder
 - `gulp` and `gulp build` make files ready for production same as `npm run build`
+- `npm run build:production` make files ready for production with hash for cache
 
 Other Commands
-- `gulp js` transpile es6 to es5
+- `gulp js` transpile es next to es5
 - `gulp sassFiles` compile sass
 - `gulp image` minify the images
 - `gulp fonts` optimize and move fonts to public folder
 - `gulp clean` delete public folder
 - `gulp copyLib` copy libraries from assets to public folder
 - `gulp copyLibAdmin` copy libraries from assets to public folder for admin gui
-
-Start From here
-`git clone` from files then `npm install` and `composer install` and `npm run autoload` if 
-error arise `npm run autoloadw@php` if error arise install latest version composer 
-then close all IDE or editors and try again then in gulp file change ServerUrl var to your 
-local host name then `npm start` then you can use commands have fun hacking!
 
 assets are contain `css` , `js` , `images`, `fonts` that will be compile to public folder never change public folder
 `js` is in ES6

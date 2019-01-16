@@ -1,9 +1,12 @@
 module.exports = {
     //change for browsersync host
     ServerUrl: "127.0.0.1",
+    ProxyUrl: "127.0.0.1",
+    Port:"3000",
     // ------------------- input and out put define here--------------------------
     inputCss: "./assets/**/*.scss",
     inputJs: "./assets/**/*.js",
+    inputJsWithoutUnderScores: "./assets/**/[^_]*.js",
     inputImages: "./assets/images/**/*",
     NotlibInput: "!./assets/js/lib/**/*.js",
     NotlibInputAdmin: "!./assets/admin/lib/**/*",
@@ -14,6 +17,11 @@ module.exports = {
     output: "./public/",
     outputLib: "./public/js/lib/",
     outputLibAdmin: "./public/admin/lib/",
+    outputForManifest: ["./public/**/*.js",
+        "./public/**/*.css",
+        "./public/**/*.{jpg,png,jpeg,gif,svg}",
+        "./public/**/*.{tff,otf,woff,woff2,eot}"
+    ],
     phpFiles: "./app/**/*.php",
     //sass options
     sassOptions: {

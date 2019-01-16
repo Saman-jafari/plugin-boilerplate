@@ -68,7 +68,7 @@
         "rules"
       ]
     ],
-    "order/properties-alphabetical-order": true,
+    "order/properties-alphabetical-order": false,
     "property-no-unknown": true,
     "property-no-vendor-prefix": true,
     "rule-empty-line-before": [

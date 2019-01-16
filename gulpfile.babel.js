@@ -1,9 +1,8 @@
-import {dest, parallel, series, src, watch} from "gulp";
+import { dest, parallel, series, src, watch } from "gulp";
 import sass from "gulp-sass";
-import sourceMaps from "gulp-sourcemaps";
 import autoPrefix from "gulp-autoprefixer";
 import buffer from "vinyl-buffer";
-import uglify from "gulp-uglify";
+import uglify from "gulp-terser";
 import imageMin from "gulp-imagemin";
 import include from "gulp-include";
 import liveReload from "gulp-livereload";
@@ -17,9 +16,20 @@ import babelify from 'babelify';
 import tap from 'gulp-tap';
 import eslint from 'gulp-eslint';
 import styleLint from 'gulp-stylelint';
+import rev from 'gulp-rev';
+import cleanGulp from 'gulp-clean';
 
 // ---------------------options for plugins goes here-------------------------
-
+export const manifest = (done) => {
+    src(config.outputForManifest)
+        .pipe(dest(config.output))
+        .pipe(cleanGulp())
+        .pipe(rev())
+        .pipe(dest(config.output))
+        .pipe(rev.manifest('manifest.json'))
+        .pipe(dest(config.output));
+    done();
+};
 
 const server = browserSync.create();
 
@@ -37,8 +47,8 @@ const serve = done => {
     server.init({
         open: "external",
         host: config.ServerUrl,
-        proxy: config.ServerUrl,
-        port: 3000,
+        proxy: config.ProxyUrl,
+        port: config.Port,
     });
     done();
 };
@@ -57,13 +67,12 @@ export const sassFiles = done => {
     src(config.inputCss)
         .pipe(styleLint({
             reporters: [
-                {formatter: 'string', console: true}
+                { formatter: 'string', console: true }
             ]
         }))
         .pipe(sass(config.sassOptions))
-        .pipe(sourceMaps.write("./"))
         .pipe(autoPrefix(config.autoPrefixOptions))
-        .pipe(StripCommentsCss({preserve: false}))
+        .pipe(StripCommentsCss({ preserve: false }))
         .pipe(dest(config.output))
         .pipe(liveReload());
     done();
@@ -101,7 +110,7 @@ export const copyLibAdmin = done => {
 
 //js tasks es next to es5
 export const eslintjs = () => {
-    src(['assets/**/*.js'])
+    src(config.inputJs)
         .pipe(eslint())
         .pipe(eslint.format())
         // Brick on failure to be super strict
@@ -120,22 +129,23 @@ export const eslintjs = () => {
 
 export const js = done => {
     eslintjs();
-    src('assets/**/[^_]*.js', {read: false}) // no need of reading file because browserify does.
+    src(config.inputJsWithoutUnderScores, { read: false }) // no need of reading file because browserify does.
         .pipe(tap(function (file) {
 
             log.info('bundling ' + file.path);
 
             // replace file contents with browserify's bundle stream
-            file.contents = browserify(file.path, {debug: true})
-                .transform(babelify, {presets: ["@babel/env"]})
+            file.contents = browserify(file.path, { debug: true })
+                .transform(babelify, { presets: ["@babel/env"] })
                 .bundle();
 
         }))
         // transform streaming contents into buffer contents (because gulp-sourcemaps does not support streaming contents)
         .pipe(buffer())
-        .pipe(uglify({mangle: false,}))
-        .pipe(sourceMaps.init({loadMaps: true}))
-        .pipe(sourceMaps.write("./"))
+        .pipe(uglify({
+            keep_fnames: true,
+            mangle: false
+        }))
         .pipe(dest(config.output))
         .pipe(liveReload());
     done();
@@ -147,11 +157,11 @@ export const image = done => {
         .pipe(
             imageMin(
                 [
-                    imageMin.gifsicle({interlaced: true}),
-                    imageMin.jpegtran({progressive: true}),
-                    imageMin.optipng({optimizationLevel: 5}),
+                    imageMin.gifsicle({ interlaced: true }),
+                    imageMin.jpegtran({ progressive: true }),
+                    imageMin.optipng({ optimizationLevel: 5 }),
                     imageMin.svgo({
-                        plugins: [{removeViewBox: true}, {cleanupIDs: false}],
+                        plugins: [{ removeViewBox: true }, { cleanupIDs: false }],
                     }),
                 ],
                 {
@@ -181,7 +191,7 @@ export const watchFiles = done => {
         });
     done();
 };
-export {watchFiles as watch};
+export { watchFiles as watch };
 export const build = series(clean, js, sassFiles, copyLib, copyLibAdmin, image, fonts);
 
 //development env

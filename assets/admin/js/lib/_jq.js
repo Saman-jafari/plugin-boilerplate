@@ -1,3 +1,5 @@
 const blah = () => {
-    console.log('bla')
+    return 'test';
 };
+
+blah();
