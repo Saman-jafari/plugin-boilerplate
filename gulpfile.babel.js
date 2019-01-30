@@ -18,6 +18,8 @@ import eslint from 'gulp-eslint';
 import styleLint from 'gulp-stylelint';
 import rev from 'gulp-rev';
 import cleanGulp from 'gulp-clean';
+import collect from 'gulp-rev-collector';
+
 
 // ---------------------options for plugins goes here-------------------------
 export const manifest = (done) => {
@@ -75,6 +77,13 @@ export const sassFiles = done => {
         .pipe(StripCommentsCss({ preserve: false }))
         .pipe(dest(config.output))
         .pipe(liveReload());
+    done();
+};
+
+export const revCollect = done => {
+    src(config.collect.src)
+        .pipe(collect())
+        .pipe(dest(config.output));
     done();
 };
 

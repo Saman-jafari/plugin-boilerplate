@@ -37,4 +37,10 @@ module.exports = {
             "Firefox ESR",
         ],
     },
+    collect: {
+        src: [
+            './public/manifest.json',
+            './public/**/*.{css,js}'
+        ]
+    }
 };

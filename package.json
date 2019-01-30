@@ -6,7 +6,7 @@
   "scripts": {
     "start": "gulp dev",
     "build": "gulp build",
-    "build:production": "gulp build && gulp manifest",
+    "build:production": "gulp build && gulp manifest && gulp revCollect",
     "aloadphp": "php composer dump-autoload -o",
     "aload": "composer dump-autoload -o",
     "composerInstall": "composer install",
@@ -55,6 +55,7 @@
     "stylelint-scss": "^3.5.0",
     "vinyl-buffer": "latest",
     "vinyl-source-stream": "^2.0.0",
-    "gulp-include": "latest"
+    "gulp-include": "latest",
+    "gulp-rev-collector": "latest"
   }
 }
