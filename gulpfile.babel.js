@@ -1,4 +1,5 @@
-import { dest, parallel, series, src, watch } from "gulp";
+/* eslint-disable */
+import {dest, parallel, series, src, watch} from "gulp";
 import sass from "gulp-sass";
 import autoPrefix from "gulp-autoprefixer";
 import buffer from "vinyl-buffer";
@@ -24,12 +25,12 @@ import collect from 'gulp-rev-collector';
 // ---------------------options for plugins goes here-------------------------
 export const manifest = (done) => {
     src(config.outputForManifest)
-        .pipe(dest(config.output))
-        .pipe(cleanGulp())
-        .pipe(rev())
-        .pipe(dest(config.output))
-        .pipe(rev.manifest('manifest.json'))
-        .pipe(dest(config.output));
+    .pipe(dest(config.output))
+    .pipe(cleanGulp())
+    .pipe(rev())
+    .pipe(dest(config.output))
+    .pipe(rev.manifest('manifest.json'))
+    .pipe(dest(config.output));
     done();
 };
 
@@ -67,23 +68,27 @@ export const clean = () => del(["public"]);
 //css tasks scss to css
 export const sassFiles = done => {
     src(config.inputCss)
-        .pipe(styleLint({
-            reporters: [
-                { formatter: 'string', console: true }
-            ]
-        }))
-        .pipe(sass(config.sassOptions))
-        .pipe(autoPrefix(config.autoPrefixOptions))
-        .pipe(StripCommentsCss({ preserve: false }))
-        .pipe(dest(config.output))
-        .pipe(liveReload());
+    .pipe(sass(config.sassOptions))
+    .pipe(autoPrefix(config.autoPrefixOptions))
+    .pipe(StripCommentsCss({preserve: false}))
+    .pipe(dest(config.output))
+    .pipe(liveReload());
+    done();
+};
+export const styleLintScss = done => {
+    src(config.inputCss)
+    .pipe(styleLint({
+        reporters: [
+            {formatter: 'string', console: true}
+        ]
+    }));
     done();
 };
 
 export const revCollect = done => {
     src(config.collect.src)
-        .pipe(collect())
-        .pipe(dest(config.output));
+    .pipe(collect())
+    .pipe(dest(config.output));
     done();
 };
 
@@ -91,14 +96,14 @@ export const revCollect = done => {
 
 export const copyLib = done => {
     src(config.libInput)
-        .pipe(
-            include({
-                extensions: "js",
-                hardFail: true,
-                includePaths: [__dirname + "/node_modules"],
-            }),
-        )
-        .pipe(dest(config.outputLib));
+    .pipe(
+        include({
+            extensions: "js",
+            hardFail: true,
+            includePaths: [__dirname + "/node_modules"],
+        })
+    )
+    .pipe(dest(config.outputLib));
     done();
 };
 
@@ -106,25 +111,26 @@ export const copyLib = done => {
 
 export const copyLibAdmin = done => {
     src(config.libInputAdmin)
-        .pipe(
-            include({
-                extensions: "js",
-                hardFail: true,
-                includePaths: [__dirname + "/node_modules"],
-            }),
-        )
-        .pipe(dest(config.outputLibAdmin));
+    .pipe(
+        include({
+            extensions: "js",
+            hardFail: true,
+            includePaths: [__dirname + "/node_modules"],
+        })
+    )
+    .pipe(dest(config.outputLibAdmin));
     done();
 };
 
 //js tasks es next to es5
-export const eslintjs = () => {
-    src(config.inputJs)
-        .pipe(eslint())
-        .pipe(eslint.format())
-        // Brick on failure to be super strict
+export const eslintjs = (done) => {
+    src([config.inputJs, config.NotlibInput, config.NotlibInputAdmin])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    // Brick on failure to be super strict
         .pipe(eslint.results(results => {
             // Called once for all ESLint results.
+            console.log(`ESLint result: ${result.filePath}`);
             console.log(`Total Results: ${results.length}`);
             console.log(`Total Warnings: ${results.warningCount}`);
             console.log(`Total Errors: ${results.errorCount}`);
@@ -133,52 +139,52 @@ export const eslintjs = () => {
             }
         }))
         .pipe(eslint.failOnError());
+    done();
     // transform file objects using gulp-tap plugin
 };
 
 export const js = done => {
-    eslintjs();
-    src(config.inputJsWithoutUnderScores, { read: false }) // no need of reading file because browserify does.
+    src([config.inputJsWithoutUnderScores, config.NotlibInput, config.NotlibInputAdmin], {read: false}) // no need of reading file because browserify does.
         .pipe(tap(function (file) {
 
             log.info('bundling ' + file.path);
 
             // replace file contents with browserify's bundle stream
-            file.contents = browserify(file.path, { debug: true })
-                .transform(babelify, { presets: ["@babel/env"] })
-                .bundle();
+            file.contents = browserify(file.path, {debug: true})
+            .transform(babelify, {presets: ["@babel/env"]})
+            .bundle();
 
         }))
         // transform streaming contents into buffer contents (because gulp-sourcemaps does not support streaming contents)
         .pipe(buffer())
         .pipe(uglify({
-            keep_fnames: true,
-            mangle: false
-        }))
-        .pipe(dest(config.output))
-        .pipe(liveReload());
+        keep_fnames: true,
+        mangle: false
+    }))
+    .pipe(dest(config.output))
+    .pipe(liveReload());
     done();
 };
 
 //media tasks minify images
 export const image = done => {
     src(config.inputImages)
-        .pipe(
-            imageMin(
-                [
-                    imageMin.gifsicle({ interlaced: true }),
-                    imageMin.jpegtran({ progressive: true }),
-                    imageMin.optipng({ optimizationLevel: 5 }),
-                    imageMin.svgo({
-                        plugins: [{ removeViewBox: true }, { cleanupIDs: false }],
-                    }),
-                ],
-                {
-                    verbose: true,
-                },
-            ),
-        )
-        .pipe(dest("public/images"));
+    .pipe(
+        imageMin(
+            [
+                imageMin.gifsicle({interlaced: true}),
+                imageMin.jpegtran({progressive: true}),
+                imageMin.optipng({optimizationLevel: 5}),
+                imageMin.svgo({
+                    plugins: [{removeViewBox: true}, {cleanupIDs: false}],
+                }),
+            ],
+            {
+                verbose: true,
+            },
+        ),
+    )
+    .pipe(dest("public/images"));
     done();
 };
 //copy fonts
@@ -200,7 +206,7 @@ export const watchFiles = done => {
         });
     done();
 };
-export { watchFiles as watch };
+export {watchFiles as watch};
 export const build = series(clean, js, sassFiles, copyLib, copyLibAdmin, image, fonts);
 
 //development env
